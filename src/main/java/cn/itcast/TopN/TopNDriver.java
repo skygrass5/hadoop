@@ -1,25 +1,25 @@
-package cn.itcast.dedup;
+package cn.itcast.TopN;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.IOException;
-//去重
-public class DedupDriver {
-    public static void main(String[] args) throws IOException,
-            ClassNotFoundException, InterruptedException {
+public class TopNDriver {
+    public static void main(String[] args) throws Exception{
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
-        job.setJarByClass(DedupDriver.class);
-        job.setMapperClass(DedupMapper.class);
-        job.setReducerClass(DedupReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(NullWritable.class);
+        job.setJarByClass(TopNDriver.class);
+        job.setMapperClass(TopNMapper.class);
+        job.setReducerClass(TopNReducer.class);
+        job.setNumReduceTasks(1);
+        job.setMapOutputKeyClass(NullWritable.class);
+        job.setMapOutputValueClass(IntWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(IntWritable.class);
         FileInputFormat.setInputPaths(job, new Path("F:/Hadoop/mr/{input/*}"));
         FileOutputFormat.setOutputPath(job, new Path("F:/Hadoop/mr/output"));
         boolean res = job.waitForCompletion(true);
